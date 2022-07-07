@@ -1,6 +1,10 @@
 package com.techelevator.tenmo.dao;
 
-public interface Transfer {
+public interface TransferDao {
+
+
+
+
 
 
 }

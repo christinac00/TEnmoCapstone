@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 public class Transfer_Status {
-    
+
     public Transfer_Status(int transferStatusId, String transferStatus) {
         this.transferStatusId = transferStatusId;
         this.transferStatus = transferStatus;
