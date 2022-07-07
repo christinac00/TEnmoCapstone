@@ -21,7 +21,7 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public List<Account> findAllAccountId() {
         List<Account> account = new ArrayList<Account>();
-        String select = "SELECT * FROM account WHERE account_id = ?;";
+        String select = "SELECT account_id, user_id, balance FROM account;";
         SqlRowSet result = jdbcTemplate.queryForRowSet(select);
 
         while (result.next()) {
@@ -31,51 +31,62 @@ public class JdbcAccountDao implements AccountDao {
     }
 
 
-    @Override
-    public Account findAcctIdByUserId(int userId) {
-        Account account = null;
-        String sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
-        if(rowSet.next()){
-            account = mapRowToAccount(rowSet);
-        }
-        return account;
-    }
+//    @Override
+//    public Account findAcctByAcctId(int acctId){
+//        Account account = null;
+//        String sql = "SELECT account_id, user_id, balance FROM account WHERE account_id = ?;";
+//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, acctId);
+//        if (result.next()){
+//            account = mapRowToAccount(result);
+//        }
+//        return account;
+//    }
+
+//    @Override
+//    public Account findAcctIdByUserId(int userId) {
+//        Account account = null;
+//        String sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = ?;";
+//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
+//        if(rowSet.next()){
+//            account = mapRowToAccount(rowSet);
+//        }
+//        return account;
+//    }
 
     @Override
     public Account getBalance(int accountId) {
         Account account = null;
-        String sql = "SELECT balance FROM account WHERE account_id = ?;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, BigDecimal.class, accountId);
+        String sql = "SELECT account_id, user_id, balance FROM account WHERE account_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
         if (results.next()){
             account = mapRowToAccount(results);
         }
         return account;
     }
-    @Override
-    public Account findAcctByUsername(String username) {
-        Account account = null;
-        String sql = "SELECT account_id, balance, t.user_id, t.username " +
-                "FROM account a" + "JOIN tenmo_user t " + "ON a.user_id = t.user_id " +
-                "WHERE username = ?; ";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, username);
-        if (result.next()) {
-            account = mapRowToAccount(result);
-        }
-        return account;
-    }
-    @Override
-    public Account findUsernameByAcct(int accountId) {
-        Account account = null;
-        String sql = "SELECT username" +
-                "FROM tenmo_user t " + "JOIN account a ON t.user_id = a.user_id " + "WHERE account_id = ? ;";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountId);
-
-        if (result.next()) {
-            account = mapRowToAccount(result);
-        }
-        return account;
-    }
+//    @Override
+//    public Account findAcctByUsername(String username) {
+//        Account account = null;
+//        String sql = "SELECT account_id, balance, t.user_id, t.username " +
+//                "FROM account a" + "JOIN tenmo_user t " + "ON a.user_id = t.user_id " +
+//                "WHERE username = ?; ";
+//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, username);
+//        if (result.next()) {
+//            account = mapRowToAccount(result);
+//        }
+//        return account;
+//    }
+//    @Override
+//    public Account findUsernameByAcct(int accountId) {
+//        Account account = null;
+//        String sql = "SELECT username" +
+//                "FROM tenmo_user t " + "JOIN account a ON t.user_id = a.user_id " + "WHERE account_id = ? ;";
+//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountId);
+//
+//        if (result.next()) {
+//            account = mapRowToAccount(result);
+//        }
+//        return account;
+//    }
 
 
 

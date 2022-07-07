@@ -2,15 +2,19 @@ package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-    @Component
+@Component
     public class JdbcTransferDao implements TransferDao {
+        private Transfer transfer;
         private JdbcTemplate jdbcTemplate;
 
         public JdbcTransferDao(DataSource dataSource) {
@@ -23,6 +27,24 @@ import java.math.BigDecimal;
         // optional reject transfer boolean
         // A transfer includes the User IDs of the from and to users and the amount of TE Bucks.
         // optional pending
+
+        @Override
+        public List<Transfer> listOfUsers(){
+            List<Transfer> users = new ArrayList<>();
+            String sql = "SELECT t.account_to FROM transfer t " +
+                    "JOIN account a ON a.account_id = t.account_to;";
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
+
+            while (result.next()){
+                users.add(mapRowToTransfer(result));
+            }
+            return users;
+        }
+
+
+
+
+
 
         private Transfer mapRowToTransfer(SqlRowSet rowSet) {
             Transfer transfer = new Transfer();
