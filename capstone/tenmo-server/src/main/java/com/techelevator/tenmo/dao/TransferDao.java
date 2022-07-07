@@ -9,6 +9,12 @@ public interface TransferDao {
 
     List<Transfer> listOfUsers();
 
+    Transfer create(Transfer transfer, int transferID);
+
+   // Transfer update(Transfer transfer, int transferID);
+
+    Transfer selectUserForTransfer(int id);
+
 
 
 
