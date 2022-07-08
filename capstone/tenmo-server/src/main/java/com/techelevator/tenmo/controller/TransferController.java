@@ -17,9 +17,9 @@ public class TransferController {
     private Mapper mapper;
 
 
-    public TransferController(JdbcTransferDao transferDao, Mapper mapper) {
+    public TransferController(JdbcTransferDao transferDao) {
         this.transferDao = transferDao;
-        this.mapper = mapper;
+      //  this.mapper = mapper;
     }
 
     @RequestMapping(path = "/userlist", method = RequestMethod.GET)

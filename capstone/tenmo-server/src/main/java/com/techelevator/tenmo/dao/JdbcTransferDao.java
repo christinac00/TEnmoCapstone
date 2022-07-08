@@ -21,6 +21,13 @@ import java.util.List;
         private List<Transfer> transfers = new ArrayList<>();
         private JdbcTemplate jdbcTemplate;
 
+        private static final int TRANSFER_TYPE_REQUEST = 1;
+        private static final int TRANSFER_TYPE_SEND = 2;
+        private static final int TRANSFER_STATUS_PENDING =1;
+        private static final int TRANSFER_STATUS_APPROVED =2;
+        private static final int TRANSFER_STATUS_REJECTED =3;
+
+
         public JdbcTransferDao(DataSource dataSource) {
             this.jdbcTemplate = new JdbcTemplate(dataSource);
         }
@@ -64,12 +71,15 @@ import java.util.List;
     @Transactional
     public void create(TransferDTO transferDTO) {
 
+            
         //insert accountFROM, accountTO, amount to create transfer
         String sqlInsert = " INSERT INTO transfer\n" +
-                "\t(account_from, account_to, amount\n" +
+                "\t(transfer_type_id, transfer_status_id, account_from, account_to, amount\n" +
                 ")\n" +
-                "VALUES (?, ?, ?);";
-        jdbcTemplate.update(sqlInsert, transferDTO.getToUser(), transferDTO.getFromUser(), transferDTO.getAmount());
+                "VALUES (" + TRANSFER_TYPE_SEND + ", " + TRANSFER_STATUS_APPROVED + ", ?, ?, ?) " +
+                "WHERE account_from != account_to AND amount > 0 AND " +
+                "(SELECT balance FROM account WHERE user_id = ?) > amount;";
+        jdbcTemplate.update(sqlInsert, transferDTO.getToUser(), transferDTO.getFromUser(), transferDTO.getAmount(), transferDTO.getFromUser());
 
         //update accountFROM
         String sqlUpdate1 = "UPDATE account SET balance = balance - ? WHERE account_id = ?;\n";
