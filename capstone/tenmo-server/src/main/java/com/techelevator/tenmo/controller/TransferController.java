@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 
+import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.exception.AmountLessThanRequiredException;
 import com.techelevator.tenmo.exception.InsufficientBalanceException;
@@ -20,12 +21,14 @@ import java.util.List;
 public class TransferController {
 
     private JdbcTransferDao transferDao;
-    private Account account;
+    private JdbcAccountDao accountDao;
+    //private Account account;
     private Mapper mapper;
 
 
-    public TransferController(JdbcTransferDao transferDao) {
+    public TransferController(JdbcTransferDao transferDao, JdbcAccountDao accountDao) {
         this.transferDao = transferDao;
+        this.accountDao = accountDao;
       //  this.mapper = mapper;
     }
 
@@ -36,6 +39,7 @@ public class TransferController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public void createTransfer(@RequestBody TransferDTO transferDTO) throws UserCannotSendToSelfException, AmountLessThanRequiredException, InsufficientBalanceException {
+        Account account = accountDao.findAcctIdByUserId(transferDTO.getFromUser());
         if (transferDTO.getFromUser() == transferDTO.getToUser()) {
             throw new UserCannotSendToSelfException();
         }
@@ -44,7 +48,7 @@ public class TransferController {
             throw new AmountLessThanRequiredException();
         }
 
-        if (account.getBalance().compareTo(transferDTO.getAmount()) <= 0) {
+        if (account.getBalance().compareTo(transferDTO.getAmount()) < 0) {
             throw new InsufficientBalanceException();
 
 
