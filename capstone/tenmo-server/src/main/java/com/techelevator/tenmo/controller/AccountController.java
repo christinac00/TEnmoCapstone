@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.JdbcUserDao;
+import com.techelevator.tenmo.exception.AccountNotFoundException;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/accounts")
-//@PreAuthorize("isAuthenticated()")
 public class AccountController {
 
     private JdbcAccountDao accountDao;
     private JdbcUserDao userDao;
     private JdbcTransferDao transferDao;
-
 
     public AccountController(JdbcAccountDao accountDao, JdbcUserDao userDao, JdbcTransferDao transferDao) {
         this.accountDao = accountDao;
@@ -46,7 +47,7 @@ public class AccountController {
 
 
     @RequestMapping(path = "/balance/{id}", method = RequestMethod.GET)
-    public Account findBalance(@PathVariable int id){
+    public Account findBalance(@PathVariable int id) throws AccountNotFoundException {
         return accountDao.getBalance(id);
     }
 
