@@ -29,6 +29,9 @@ public class TransferController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public void createTransfer(@RequestBody TransferDTO transferDTO) {
+        //fromusser != touser exceptionerror
+        // amount > 0
+
 
         transferDao.create(transferDTO);
     }

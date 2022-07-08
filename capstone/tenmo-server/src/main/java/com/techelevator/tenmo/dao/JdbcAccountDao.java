@@ -42,16 +42,16 @@ public class JdbcAccountDao implements AccountDao {
 //        return account;
 //    }
 
-//    @Override
-//    public Account findAcctIdByUserId(int userId) {
-//        Account account = null;
-//        String sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = ?;";
-//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
-//        if(rowSet.next()){
-//            account = mapRowToAccount(rowSet);
-//        }
-//        return account;
-//    }
+    @Override
+    public Account findAcctIdByUserId(int userId) {
+        Account account = null;
+        String sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
+        if(rowSet.next()){
+            account = mapRowToAccount(rowSet);
+        }
+        return account;
+    }
 
     @Override
     public Account getBalance(int accountId) {
