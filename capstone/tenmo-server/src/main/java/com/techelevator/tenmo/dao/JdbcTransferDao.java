@@ -2,11 +2,14 @@ package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -43,47 +46,44 @@ import java.util.List;
         }
 // select user
 
+//    @Override
+//    public Transfer selectUserForTransfer(int id) {
+//            Transfer transfer = null;
+//            String sql =
+//            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id);
+//
+//            if (result.next()) {
+//                transfer = mapRowToTransfer(result);
+//            }
+//            return transfer;
+//    }
+
+
     @Override
-    public Transfer selectUserForTransfer(int id) {
-            Transfer transfer = null;
-            String sql =
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id);
-
-            if (result.next()) {
-                transfer = mapRowToTransfer(result);
-            }
-            return transfer;
-    }
-
-
-    @Override
+    @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public Transfer create(Transfer transfer, int accountTo, int accountFrom, BigDecimal amount) {
-        String sql = "SELECT account_id, user_id, balance FROM account a "
-                + "JOIN transfer t ON t.account_to = a.account_id OR t.account_from = a.account_id WHERE a.account_id = ? ;";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountTo, accountFrom, amount);
-        transfer.setAccountTo(transfer.getAccountTo());
-        transfer.setAccountFrom(transfer.getAccountFrom());
-        transfer.setAmount(transfer.getAmount());
-        this.transfers.add(transfer);
+    public void create(TransferDTO transferDTO) {
 
+        //insert accountFROM, accountTO, amount to create transfer
         String sqlInsert = " INSERT INTO transfer\n" +
-                "\t(account_to, account_from, amount\n" +
+                "\t(account_from, account_to, amount\n" +
                 ")\n" +
-                "VALUES ((SELECT account_to FROM transfer t JOIN account a ON t.account_to = a.account_id WHERE  a.account_id = ?),\n" +
-                "(SElECT account_from FROM transfer t JOIN account a ON t.account_from = a.account_id WHERE a.account_id = ?)," +
-                "(SELECT amount FROM transfer WHERE account_from = ?))";
-        jdbcTemplate.update(sqlInsert, transfer.getAccountTo(), transfer.getAccountFrom(), transfer.getAmount());
+                "VALUES (?, ?, ?);";
+        jdbcTemplate.update(sqlInsert, transferDTO.getToUser(), transferDTO.getFromUser(), transferDTO.getAmount());
 
+        //update accountFROM
         String sqlUpdate1 = "UPDATE account SET balance = balance - ? WHERE account_id = ?;\n";
+        jdbcTemplate.update(sqlUpdate1, transferDTO.getAmount());
+
+        //update accountTO
+        String sqlUpdate2 = "UPDATE account SET balance = balance + ? WHERE account_id = ?;\n";
+        jdbcTemplate.update(sqlUpdate2, transferDTO.getAmount(), transferDTO.getToUser());
 
 
-            String sqlUpdate2 = "UPDATE account SET balance = balance + ? WHERE account_id = ?;\n";
-                  jdbcTemplate
+
         // A transfer includes the User IDs of the from and to users and the amount of TE Bucks.
-        //get users
 
-        return null;
+
     }
 
 
