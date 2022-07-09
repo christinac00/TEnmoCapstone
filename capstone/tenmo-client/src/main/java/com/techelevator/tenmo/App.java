@@ -5,12 +5,21 @@ import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.util.BasicLogger;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 
 public class App {
-
+    private final RestTemplate restTemplate = new RestTemplate();
     private static final String API_BASE_URL = "http://localhost:8080/";
+    private String authToken = null;
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
@@ -72,7 +81,7 @@ public class App {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
-                viewCurrentBalance(account);
+                viewCurrentBalance(account.getAccountId());
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
@@ -90,22 +99,37 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance(Account existingAccount) throws NullPointerException{
-        Account account = null;
-        while (account == null){
-            System.out.println("Enter Account ID");
-            if (existingAccount != null) {
-                System.out.println(existingAccount);
-            }
-            if (account == null) {
-                System.out.println("Invalid Account ID please try again");
-                throw new NullPointerException();
-            }
-            break;
-        } if (existingAccount != null) {
-            account.setAccountId(existingAccount.getAccountId());
+	private BigDecimal viewCurrentBalance(int accountId) throws NullPointerException{
+        return restTemplate.getForObject(API_BASE_URL + "accounts/balance/" + accountId, Account.class);
+
+//        Account account = null;
+////        while (account != null){
+////            System.out.println("Enter Account ID");
+        try {
+            ResponseEntity <BigDecimal> response = restTemplate.exchange(API_BASE_URL + "accounts/balance/{id}" + accountId, HttpMethod.GET, makeAuthEntity(), BigDecimal.class );
+            BigDecimal = response.getBody();
+        } catch (RestClientException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+
         }
-        System.out.println(account.getCurrentBalance());
+        return account.getCurrentBalance();
+//        if (existingAccount != null) {
+//           account.setAccountId(existingAccount.getAccountId());
+//            if (existingAccount != null) {
+//                System.out.println(existingAccount);
+//            }
+//            if (existingAccount == null) {
+//                System.out.println("Invalid Account ID please try again");
+//                throw new NullPointerException();
+//
+////            break;
+//        }
+//        }
+//        System.out.println(existingAccount.getCurrentBalance());
+
+
+        // Bigdecimal getBalance() {
+
 	}
 
 	private void viewTransferHistory() {
@@ -127,5 +151,10 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
+    private HttpEntity<Void> makeAuthEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(headers);
+    }
 
 }
