@@ -12,6 +12,10 @@ public interface TransferDao {
 
     void create(TransferDTO transferDTO);
 
+    Transfer getTransferById(int transferId);
+
+
+
    // Transfer update(Transfer transfer, int transferID);
 
    // Transfer selectUserForTransfer(int id);

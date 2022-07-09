@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.JdbcTransferDao;
+import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.exception.AmountLessThanRequiredException;
 import com.techelevator.tenmo.exception.InsufficientBalanceException;
 import com.techelevator.tenmo.exception.UserCannotSendToSelfException;
@@ -55,6 +56,10 @@ public class TransferController {
         } else {
 
             transferDao.create(transferDTO);
+        }
+        @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
+                public  Transfer getTransferByTransferId(@PathVariable int id) {
+            return transferDao.getTransferById(id);
         }
 
     }

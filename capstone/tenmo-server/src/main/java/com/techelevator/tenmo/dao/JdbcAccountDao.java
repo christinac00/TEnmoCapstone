@@ -75,18 +75,7 @@ public class JdbcAccountDao implements AccountDao {
 //        }
 //        return account;
 //    }
-//    @Override
-//    public Account findUsernameByAcct(int accountId) {
-//        Account account = null;
-//        String sql = "SELECT username" +
-//                "FROM tenmo_user t " + "JOIN account a ON t.user_id = a.user_id " + "WHERE account_id = ? ;";
-//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountId);
-//
-//        if (result.next()) {
-//            account = mapRowToAccount(result);
-//        }
-//        return account;
-//    }
+
 
 
 

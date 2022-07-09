@@ -53,6 +53,17 @@ import java.util.List;
             }
             return users;
         }
+
+        @Override
+        public Transfer getTransferById(int transferId) {
+            String sql = "SELECT * FROM transfer WHERE transfer_id = ?";
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, transferId);
+            Transfer transfer = null;
+            if (result.next()){
+                transfer = mapRowToTransfer(result);
+            }
+            return transfer;
+        }
 // select user
 
 //    @Override
