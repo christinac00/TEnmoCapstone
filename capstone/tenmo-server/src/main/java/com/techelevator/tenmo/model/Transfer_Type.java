@@ -2,6 +2,9 @@ package com.techelevator.tenmo.model;
 
 public class Transfer_Type {
 
+    private int transferTypeId;
+    private String transferType;
+
     public Transfer_Type(int transferTypeId, String transferType) {
         this.transferTypeId = transferTypeId;
         this.transferType = transferType;
@@ -23,7 +26,6 @@ public class Transfer_Type {
         this.transferType = transferType;
     }
 
-    private int transferTypeId;
-    private String transferType;
+
 
 }

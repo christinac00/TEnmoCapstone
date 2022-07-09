@@ -14,11 +14,16 @@ public interface TransferDao {
 
     Transfer getTransferById(int transferId);
 
+    List<Transfer> getAllTransfers();
+
+    List<Transfer> getAllSent(int typeId);
+
+    List<Transfer> getAllRequest(int typeId);
 
 
    // Transfer update(Transfer transfer, int transferID);
 
-   // Transfer selectUserForTransfer(int id);
+
 
 
 

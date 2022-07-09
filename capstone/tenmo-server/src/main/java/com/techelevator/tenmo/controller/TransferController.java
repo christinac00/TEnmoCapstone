@@ -23,6 +23,8 @@ public class TransferController {
 
     private JdbcTransferDao transferDao;
     private JdbcAccountDao accountDao;
+    private static final int TRANSFER_TYPE_REQUEST = 1;
+    private static final int TRANSFER_TYPE_SEND = 2;
     //private Account account;
     private Mapper mapper;
 
@@ -52,15 +54,32 @@ public class TransferController {
         if (account.getBalance().compareTo(transferDTO.getAmount()) < 0) {
             throw new InsufficientBalanceException();
 
-
         } else {
-
             transferDao.create(transferDTO);
-        }
-        @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
-                public  Transfer getTransferByTransferId(@PathVariable int id) {
-            return transferDao.getTransferById(id);
         }
 
     }
+
+    @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
+    public  Transfer getTransferByTransferId(@PathVariable int id) {
+        return transferDao.getTransferById(id);
+    }
+
+
+    @RequestMapping(path = "/transfers", method = RequestMethod.GET)
+    public List<Transfer> getAllTransfers(){
+        return transferDao.getAllTransfers();
+    }
+
+    @RequestMapping(path = "/transfers/sent", method = RequestMethod.GET)
+    public List<Transfer> getAllSent(){
+        return transferDao.getAllSent(TRANSFER_TYPE_SEND);
+    }
+
+    @RequestMapping(path = "/transfers/request", method = RequestMethod.GET)
+    public List<Transfer> getAllRequest(){
+        return transferDao.getAllRequest(TRANSFER_TYPE_REQUEST);
+    }
+
+
 }

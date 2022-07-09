@@ -90,7 +90,7 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance(Account existingAccount) {
+	private void viewCurrentBalance(Account existingAccount) throws NullPointerException{
         Account account = null;
         while (account == null){
             System.out.println("Enter Account ID");
@@ -99,7 +99,9 @@ public class App {
             }
             if (account == null) {
                 System.out.println("Invalid Account ID please try again");
+                throw new NullPointerException();
             }
+            break;
         } if (existingAccount != null) {
             account.setAccountId(existingAccount.getAccountId());
         }

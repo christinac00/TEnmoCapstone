@@ -7,12 +7,16 @@ public class TransferDTO {
     private int fromUser;
     private int toUser;
     private BigDecimal amount;
-    private final static String status = "Approved";
+    private int transferStatus;
+    private int transferType;
 
-    public TransferDTO(int fromUser, int toUser, BigDecimal amount) {
+
+    public TransferDTO(int fromUser, int toUser, BigDecimal amount, int transferStatus, int transferType) {
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.amount = amount;
+        this.transferStatus = transferStatus;
+        this.transferType = transferType;
     }
 
     public int getFromUser() {
@@ -38,4 +42,13 @@ public class TransferDTO {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public int getTransferStatus() {
+        return transferStatus;
+    }
+
+    public int getTransferType() {
+        return transferType;
+    }
 }
+

@@ -64,19 +64,40 @@ import java.util.List;
             }
             return transfer;
         }
-// select user
 
-//    @Override
-//    public Transfer selectUserForTransfer(int id) {
-//            Transfer transfer = null;
-//            String sql =
-//            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id);
-//
-//            if (result.next()) {
-//                transfer = mapRowToTransfer(result);
-//            }
-//            return transfer;
-//    }
+
+        @Override
+        public List<Transfer> getAllTransfers(){
+            String sql = "SELECT * FROM transfer;";
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
+            List<Transfer> allTransfers = new ArrayList<>();
+            while (result.next()){
+                allTransfers.add(mapRowToTransfer(result));
+            }
+            return allTransfers;
+        }
+
+        @Override
+        public List<Transfer> getAllSent(int TRANSFER_TYPE_SEND){
+            String sql = "SELECT * FROM transfer WHERE transfer_type_id = ?;";
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, TRANSFER_TYPE_SEND);
+            List<Transfer> sentTransfers = new ArrayList<>();
+            while (result.next()){
+                sentTransfers.add(mapRowToTransfer(result));
+            }
+            return sentTransfers;
+        }
+
+    @Override
+    public List<Transfer> getAllRequest(int TRANSFER_TYPE_REQUEST){
+        String sql = "SELECT * FROM transfer WHERE transfer_type_id = ?;";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, TRANSFER_TYPE_REQUEST);
+        List<Transfer> requestTransfers = new ArrayList<>();
+        while (result.next()){
+            requestTransfers.add(mapRowToTransfer(result));
+        }
+        return requestTransfers;
+    }
 
 
     @Override
@@ -91,7 +112,14 @@ import java.util.List;
                 ")\n" +
                 "VALUES ( ?, ?, ?, ?, ?) ";
 
-        jdbcTemplate.update(sqlInsert, TRANSFER_TYPE_SEND, TRANSFER_STATUS_APPROVED, accountFrom.getAccountId(), accountTo.getAccountId(), transferDTO.getAmount());
+        if(transferDTO.getTransferStatus() == TRANSFER_STATUS_APPROVED && transferDTO.getTransferType() == TRANSFER_TYPE_SEND) {
+            jdbcTemplate.update(sqlInsert, TRANSFER_TYPE_SEND, TRANSFER_STATUS_APPROVED, accountFrom.getAccountId(), accountTo.getAccountId(), transferDTO.getAmount());
+        } if(transferDTO.getTransferType() == TRANSFER_TYPE_REQUEST){
+            jdbcTemplate.update(sqlInsert, TRANSFER_TYPE_REQUEST, transferDTO.getTransferStatus(), accountFrom.getAccountId(), accountTo.getAccountId(), transferDTO.getAmount());
+        }
+        if(transferDTO.getTransferStatus() == TRANSFER_STATUS_REJECTED){
+            System.out.println("Transfer has been rejected. Please try again.");
+        }
 
         //update accountFROM
         String sqlUpdate1 = "UPDATE account SET balance = balance - ? WHERE account_id = ?;\n";
