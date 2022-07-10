@@ -21,12 +21,5 @@ public interface TransferDao {
     List<Transfer> getAllRequest(int typeId);
 
 
-   // Transfer update(Transfer transfer, int transferID);
-
-
-
-
-
-
 
 }

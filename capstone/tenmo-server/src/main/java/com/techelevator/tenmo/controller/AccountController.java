@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -34,33 +35,11 @@ public class AccountController {
         return accountDao.findAllAccountId();
     }
 
-//    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-//    public Account getAccountbyAcctId(@PathVariable int id){
-//        return accountDao.findAcctByAcctId(id);
-//    }
-
-//
-//    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-//    public Account get(@PathVariable int id) {
-//        return accountDao.findAcctIdByUserId(id);
-//    }
-
 
     @RequestMapping(path = "/balance/{id}", method = RequestMethod.GET)
-    public Account findBalance(@PathVariable int id) throws AccountNotFoundException {
-        return accountDao.getBalance(id);
+    public BigDecimal findBalance(@PathVariable int id) throws AccountNotFoundException {
+        return accountDao.findAcctIdByUserId(id).getBalance();
     }
-
-
-//    @RequestMapping(path = "/username", method = RequestMethod.GET)
-//    public Account accountByUsername(@PathVariable String user){
-//        return accountDao.findAcctByUsername(user);
-//    }
-
-//    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-//    public Account usernameByAccountId(@PathVariable int id){
-//        return accountDao.findUsernameByAcct(id);
-//    }
 
 
 

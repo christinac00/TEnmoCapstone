@@ -31,17 +31,6 @@ public class JdbcAccountDao implements AccountDao {
     }
 
 
-//    @Override
-//    public Account findAcctByAcctId(int acctId){
-//        Account account = null;
-//        String sql = "SELECT account_id, user_id, balance FROM account WHERE account_id = ?;";
-//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, acctId);
-//        if (result.next()){
-//            account = mapRowToAccount(result);
-//        }
-//        return account;
-//    }
-
     @Override
     public Account findAcctIdByUserId(int userId) {
         Account account = null;
@@ -63,19 +52,6 @@ public class JdbcAccountDao implements AccountDao {
         }
         return account;
     }
-//    @Override
-//    public Account findAcctByUsername(String username) {
-//        Account account = null;
-//        String sql = "SELECT account_id, balance, t.user_id, t.username " +
-//                "FROM account a" + "JOIN tenmo_user t " + "ON a.user_id = t.user_id " +
-//                "WHERE username = ?; ";
-//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, username);
-//        if (result.next()) {
-//            account = mapRowToAccount(result);
-//        }
-//        return account;
-//    }
-
 
 
 

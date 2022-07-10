@@ -25,14 +25,13 @@ public class TransferController {
     private JdbcAccountDao accountDao;
     private static final int TRANSFER_TYPE_REQUEST = 1;
     private static final int TRANSFER_TYPE_SEND = 2;
-    //private Account account;
-    private Mapper mapper;
+
 
 
     public TransferController(JdbcTransferDao transferDao, JdbcAccountDao accountDao) {
         this.transferDao = transferDao;
         this.accountDao = accountDao;
-      //  this.mapper = mapper;
+
     }
 
     @RequestMapping(path = "/userlist", method = RequestMethod.GET)

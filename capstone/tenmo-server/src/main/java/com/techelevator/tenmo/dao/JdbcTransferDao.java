@@ -33,13 +33,7 @@ import java.util.List;
             this.jdbcTemplate = new JdbcTemplate(dataSource);
             this.accountDao = accountDao;
         }
-        // transfer details
-        // list all transfers by transfer_id
-        // create transfer boolean
-        // optional accept transfer boolean
-        // optional reject transfer boolean
-        // A transfer includes the User IDs of the from and to users and the amount of TE Bucks.
-        // optional pending
+
 
         @Override
         public List<Transfer> listOfUsers(){
@@ -131,12 +125,7 @@ import java.util.List;
 
 
 
-        // A transfer includes the User IDs of the from and to users and the amount of TE Bucks.
-
-
     }
-//return 201 is created return transfer object
-
 
 
 

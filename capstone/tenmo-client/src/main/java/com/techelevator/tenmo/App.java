@@ -2,7 +2,9 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.util.BasicLogger;
@@ -12,14 +14,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class App {
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String API_BASE_URL = "http://localhost:8080/";
     private String authToken = null;
+    private AccountService accountService = new AccountService();
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
@@ -70,8 +75,11 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
+
         if (currentUser == null) {
             consoleService.printErrorMessage();
+        } else{
+            accountService.setAuthToken(currentUser.getToken());
         }
     }
 
@@ -81,7 +89,7 @@ public class App {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
-                viewCurrentBalance(Math.toIntExact(currentUser.getUser().getId()));
+                viewCurrentBalance();
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
@@ -99,53 +107,23 @@ public class App {
         }
     }
 
-	private BigDecimal viewCurrentBalance(int acctId) {
-//        return restTemplate.getForObject(API_BASE_URL + "accounts/balance/" + accountId, Account.class);
-        Account account = null;
-        account.getUserId() = currentUser.getUser().getId();
+	private void viewCurrentBalance() {
 
-            BigDecimal balance = null;
-//        while (account != null){
-//            System.out.println("Enter Account ID");
-            try {
-                ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "accounts/balance/" + acctId, HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
-                balance = response.getBody();
-            } catch (RestClientException e) {
-                //| ResourceAccessException
-                BasicLogger.log(e.getMessage());
-
-            }
-            if(currentUser.getUser().getId() >0) {
-                return balance;
-            }
-               else{
-
-            return null;
-
-        }
-//        if (existingAccount != null) {
-//           account.setAccountId(existingAccount.getAccountId());
-//            if (existingAccount != null) {
-//                System.out.println(existingAccount);
-//            }
-//            if (existingAccount == null) {
-//                System.out.println("Invalid Account ID please try again");
-//                throw new NullPointerException();
-//
-////            break;
-//        }
-//        }
-//        System.out.println(existingAccount.getCurrentBalance());
-
-
-            // Bigdecimal getBalance() {
-
+        BigDecimal currentBalance = accountService.getCurrentBalance(currentUser.getUser().getId());
+        System.out.println("Your current balance is: " + currentBalance);
 
 	}
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+
+        Transfer[] transfers = accountService.listTransfers();
+        if(transfers != null){
+            System.out.println("Transfer history: " + "\n" + transfers );
+        } else {
+            System.out.println("An error occurred, please try again.");
+        }
+
 	}
 
 	private void viewPendingRequests() {
