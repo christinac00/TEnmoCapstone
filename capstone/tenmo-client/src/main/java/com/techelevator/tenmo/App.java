@@ -25,7 +25,7 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
-    private Account account = new Account();
+//    private Account account = new Account();
 
 
 
@@ -81,7 +81,7 @@ public class App {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
-                viewCurrentBalance(account.getAccountId());
+                viewCurrentBalance(Math.toIntExact(currentUser.getUser().getId()));
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
@@ -99,20 +99,30 @@ public class App {
         }
     }
 
-	private BigDecimal viewCurrentBalance(int accountId) throws NullPointerException{
-        return restTemplate.getForObject(API_BASE_URL + "accounts/balance/" + accountId, Account.class);
+	private BigDecimal viewCurrentBalance(int acctId) {
+//        return restTemplate.getForObject(API_BASE_URL + "accounts/balance/" + accountId, Account.class);
+        Account account = null;
+        account.getUserId() = currentUser.getUser().getId();
 
-//        Account account = null;
-////        while (account != null){
-////            System.out.println("Enter Account ID");
-        try {
-            ResponseEntity <BigDecimal> response = restTemplate.exchange(API_BASE_URL + "accounts/balance/{id}" + accountId, HttpMethod.GET, makeAuthEntity(), BigDecimal.class );
-            BigDecimal = response.getBody();
-        } catch (RestClientException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
+            BigDecimal balance = null;
+//        while (account != null){
+//            System.out.println("Enter Account ID");
+            try {
+                ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "accounts/balance/" + acctId, HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+                balance = response.getBody();
+            } catch (RestClientException e) {
+                //| ResourceAccessException
+                BasicLogger.log(e.getMessage());
+
+            }
+            if(currentUser.getUser().getId() >0) {
+                return balance;
+            }
+               else{
+
+            return null;
 
         }
-        return account.getCurrentBalance();
 //        if (existingAccount != null) {
 //           account.setAccountId(existingAccount.getAccountId());
 //            if (existingAccount != null) {
@@ -128,7 +138,8 @@ public class App {
 //        System.out.println(existingAccount.getCurrentBalance());
 
 
-        // Bigdecimal getBalance() {
+            // Bigdecimal getBalance() {
+
 
 	}
 
